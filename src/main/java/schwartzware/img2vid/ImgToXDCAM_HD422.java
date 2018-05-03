@@ -123,15 +123,9 @@ public class ImgToXDCAM_HD422 {
 		private int[] counterOfRenderedAudioStreamFrames = new int[audioStreams];
 		private int nextAudioStreamToRender = 0;
 
-		private Frame videoFrame = null;
-		private Frame audioFrame = null;
-
 		public ImgToXDCAM_HD422FrameProducer(BufferedImage img, int duration) throws Exception {
 			this.setDuration(duration);
 			this.inputImg = img;
-
-			this.videoFrame = new Frame().setStreamId(0).setImage(this.inputImg);
-			this.audioFrame = new Frame().setStreamId(nextAudioStreamToRender + 1).setSamples(samples);
 		}
 
 		public ImgToXDCAM_HD422FrameProducer setDuration(int duration) throws Exception {
@@ -171,7 +165,7 @@ public class ImgToXDCAM_HD422 {
 			if (counterOfRenderedAudioStreamFrames[audioStreams - 1] == frameCounter) {
 				// System.out.println("Creating video frame " + frameCounter);
 
-				this.videoFrame.setPts(frameCounter * 1000 / fps);
+				Frame videoFrame = new Frame().setStreamId(0).setPts(frameCounter * 1000 / fps).setImage(this.inputImg);
 				frameCounter++;
 				nextAudioStreamToRender = 0;
 				return videoFrame;
@@ -179,7 +173,8 @@ public class ImgToXDCAM_HD422 {
 
 			// System.out.println("Creating audio " + nextAudioStreamToRender + " frame "
 			// + counterOfRenderedAudioStreamFrames[nextAudioStreamToRender]);
-			this.audioFrame.setPts(counterOfRenderedAudioStreamFrames[nextAudioStreamToRender] * 1000 / fps);
+			Frame audioFrame = new Frame().setStreamId(nextAudioStreamToRender + 1).setSamples(samples)
+					.setPts(counterOfRenderedAudioStreamFrames[nextAudioStreamToRender] * 1000 / fps);
 
 			counterOfRenderedAudioStreamFrames[nextAudioStreamToRender]++;
 			nextAudioStreamToRender++;
