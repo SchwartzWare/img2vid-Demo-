@@ -3,6 +3,11 @@ package schwartzware.img2vid;
 import java.io.IOException;
 import java.util.Locale;
 
+/**
+ * 
+ * @author https://memorynotfound.com/detect-os-name-version-java/
+ *
+ */
 public class OSInfo {
 
 	public enum OS {
